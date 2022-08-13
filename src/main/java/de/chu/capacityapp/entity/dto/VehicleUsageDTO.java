@@ -1,7 +1,8 @@
 package de.chu.capacityapp.entity.dto;
 
-import de.chu.capacityapp.entity.model.VehicleStatus;
+import de.chu.capacityapp.entity.model.VehicleState;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 
 public class VehicleUsageDTO {
@@ -9,8 +10,8 @@ public class VehicleUsageDTO {
     private String lisencePlate;
     private Timestamp loadingTime;
     private Timestamp unloadingTime;
-    private Long usedCapacity;
-    private VehicleStatus vehicleStatus;
+    private BigDecimal usedCapacity;
+    private VehicleState vehicleState;
     private VehicleDTO vehicle;
 
     public Long getId() {
@@ -45,20 +46,20 @@ public class VehicleUsageDTO {
         this.unloadingTime = unloadingTime;
     }
 
-    public Long getUsedCapacity() {
+    public BigDecimal getUsedCapacity() {
         return usedCapacity;
     }
 
-    public void setUsedCapacity(Long usedCapacity) {
+    public void setUsedCapacity(BigDecimal usedCapacity) {
         this.usedCapacity = usedCapacity;
     }
 
-    public VehicleStatus getVehicleStatus() {
-        return vehicleStatus;
+    public VehicleState getVehicleStatus() {
+        return vehicleState;
     }
 
-    public void setVehicleStatus(VehicleStatus vehicleStatus) {
-        this.vehicleStatus = vehicleStatus;
+    public void setVehicleStatus(VehicleState vehicleState) {
+        this.vehicleState = vehicleState;
     }
 
     public VehicleDTO getVehicle() {

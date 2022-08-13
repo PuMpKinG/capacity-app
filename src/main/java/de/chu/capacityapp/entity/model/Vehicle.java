@@ -1,7 +1,6 @@
 package de.chu.capacityapp.entity.model;
 
 import javax.persistence.*;
-import java.math.BigDecimal;
 import java.util.Objects;
 
 /**
@@ -18,16 +17,16 @@ public class Vehicle extends AbstractEntity {
     private String model;
 
     @Column(name = "length", nullable = false)
-    private BigDecimal length;
+    private Double length;
 
     @Column(name = "width", nullable = false)
-    private BigDecimal width;
+    private Double width;
 
     @Column(name = "height", nullable = false)
-    private BigDecimal height;
+    private Double height;
 
     @Transient
-    private Long capacity;
+    private Double capacity;
 
     public void setId(Long id) {
         this.id = id;
@@ -49,27 +48,27 @@ public class Vehicle extends AbstractEntity {
         this.model = model;
     }
 
-    public BigDecimal getLength() {
+    public Double getLength() {
         return length;
     }
 
-    public void setLength(BigDecimal length) {
+    public void setLength(Double length) {
         this.length = length;
     }
 
-    public BigDecimal getWidth() {
+    public Double getWidth() {
         return width;
     }
 
-    public void setWidth(BigDecimal width) {
+    public void setWidth(Double width) {
         this.width = width;
     }
 
-    public BigDecimal getHeight() {
+    public Double getHeight() {
         return height;
     }
 
-    public void setHeight(BigDecimal height) {
+    public void setHeight(Double height) {
         this.height = height;
     }
 
@@ -80,14 +79,14 @@ public class Vehicle extends AbstractEntity {
      * – er hat folglich 13,6 Lademeter (ldm).
      * @return
      */
-    public Long getCapacity() {
-        return this.getLength().longValue();
+    public Double getCapacity() {
+        return this.getLength();
     }
 
     public Vehicle() {
     }
 
-    public Vehicle(String company, String model, BigDecimal length, BigDecimal width, BigDecimal height) {
+    public Vehicle(String company, String model, Double length, Double width, Double height) {
         this.company = company;
         this.model = model;
         this.length = length;

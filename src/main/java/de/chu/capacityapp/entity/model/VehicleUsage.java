@@ -19,9 +19,9 @@ public class VehicleUsage extends AbstractEntity {
     @Column(name = "unloading_time")
     private Timestamp unloadingTime;
     @Column(name = "used_capacity")
-    private Long usedCapacity;
-    @Column(name = "vehicle_Status", nullable = false)
-    private VehicleStatus vehicleStatus;
+    private Double usedCapacity;
+    @Column(name = "vehicle_state", nullable = false)
+    private VehicleState vehicleState;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "vehicle_ref")
     private Vehicle vehicleRefObj;
@@ -51,39 +51,39 @@ public class VehicleUsage extends AbstractEntity {
         this.unloadingTime = unloadingTime;
     }
 
-    public Long getUsedCapacity() {
+    public Double getUsedCapacity() {
         return usedCapacity;
     }
 
-    public void setUsedCapacity(Long usedCapacity) {
+    public void setUsedCapacity(Double usedCapacity) {
         this.usedCapacity = usedCapacity;
     }
 
-    public VehicleStatus getVehicleStatus() {
-        return vehicleStatus;
+    public VehicleState getVehicleState() {
+        return vehicleState;
     }
 
-    public void setVehicleStatus(VehicleStatus vehicleStatus) {
-        this.vehicleStatus = vehicleStatus;
+    public void setVehicleState(VehicleState vehicleState) {
+        this.vehicleState = vehicleState;
     }
 
-    public Vehicle getVehicleTypeRefObj() {
+    public Vehicle getVehicleRefObj() {
         return vehicleRefObj;
     }
 
-    public void setVehicleTypeRefObj(Vehicle verhicleTypeRef) {
-        this.vehicleRefObj = verhicleTypeRef;
+    public void setVehicleRefObj(Vehicle vehicleRefObj) {
+        this.vehicleRefObj = vehicleRefObj;
     }
 
     public VehicleUsage() {
     }
 
-    public VehicleUsage(String lisencePlate, Timestamp loadingTime, Timestamp unloadingTime, Long usedCapacity, VehicleStatus vehicleStatus, Vehicle vehicleRefObj) {
+    public VehicleUsage(String lisencePlate, Timestamp loadingTime, Timestamp unloadingTime, Double usedCapacity, VehicleState vehicleState, Vehicle vehicleRefObj) {
         this.lisencePlate = lisencePlate;
         this.loadingTime = loadingTime;
         this.unloadingTime = unloadingTime;
         this.usedCapacity = usedCapacity;
-        this.vehicleStatus = vehicleStatus;
+        this.vehicleState = vehicleState;
         this.vehicleRefObj = vehicleRefObj;
     }
 
@@ -93,12 +93,12 @@ public class VehicleUsage extends AbstractEntity {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         VehicleUsage that = (VehicleUsage) o;
-        return Objects.equals(lisencePlate, that.lisencePlate) && Objects.equals(loadingTime, that.loadingTime) && Objects.equals(unloadingTime, that.unloadingTime) && Objects.equals(usedCapacity, that.usedCapacity) && vehicleStatus == that.vehicleStatus && Objects.equals(vehicleRefObj, that.vehicleRefObj);
+        return Objects.equals(lisencePlate, that.lisencePlate) && Objects.equals(loadingTime, that.loadingTime) && Objects.equals(unloadingTime, that.unloadingTime) && Objects.equals(usedCapacity, that.usedCapacity) && vehicleState == that.vehicleState && Objects.equals(vehicleRefObj, that.vehicleRefObj);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), lisencePlate, loadingTime, unloadingTime, usedCapacity, vehicleStatus, vehicleRefObj);
+        return Objects.hash(super.hashCode(), lisencePlate, loadingTime, unloadingTime, usedCapacity, vehicleState, vehicleRefObj);
     }
 
     @Override
@@ -108,7 +108,7 @@ public class VehicleUsage extends AbstractEntity {
                 ", loadingTime=" + loadingTime +
                 ", unloadingTime=" + unloadingTime +
                 ", usedCapacity=" + usedCapacity +
-                ", vehicleStatus=" + vehicleStatus +
+                ", vehicleStatus=" + vehicleState +
                 ", vehicleRefObj=" + vehicleRefObj +
                 ", id=" + id +
                 '}';

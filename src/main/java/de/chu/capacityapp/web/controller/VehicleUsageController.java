@@ -1,6 +1,7 @@
 package de.chu.capacityapp.web.controller;
 
 import de.chu.capacityapp.entity.dto.VehicleUsageDTO;
+import de.chu.capacityapp.entity.model.VehicleState;
 import de.chu.capacityapp.entity.model.VehicleUsage;
 import de.chu.capacityapp.server.service.VehicleUsageService;
 import org.modelmapper.ModelMapper;
@@ -41,10 +42,33 @@ public class VehicleUsageController {
      * @return
      */
     @PostMapping
-    public VehicleUsageDTO createNewVehicle(@RequestBody VehicleUsageDTO vehicleUsageDTO) {
+    public VehicleUsageDTO createNewVehicleUsage(@RequestBody VehicleUsageDTO vehicleUsageDTO) {
         return convertToDto(
-                this.vehicleUsageService.createNewVehicle(
+                this.vehicleUsageService.createNewVehicleUsage(
                         convertToModel(vehicleUsageDTO)));
+    }
+
+    @PutMapping(path = "/{vehicleUsageId}/load/{ldm}")
+    public void loadGoodsOnVehicle(@PathVariable("vehicleUsageId") Long vehicleUsageId,
+                            @PathVariable("ldm") Double ldm) {
+        this.vehicleUsageService.loadGoodsOnVehicle(vehicleUsageId, ldm);
+    }
+
+    @PutMapping(path = "/{vehicleUsageId}/unload/{ldm}")
+    public void unloadGoodsFromVehicle(@PathVariable("vehicleUsageId") Long vehicleUsageId,
+                              @PathVariable("ldm") Double ldm) {
+        this.vehicleUsageService.unloadGoodsFromVehicle(vehicleUsageId, ldm);
+    }
+
+    @PutMapping(path = "/{vehicleUsageId}/state/{state}")
+    public void changeState(@PathVariable("vehicleUsageId") Long vehicleUsageId,
+                            @PathVariable("state") VehicleState state) {
+        this.vehicleUsageService.changeState(vehicleUsageId, state);
+    }
+
+    @DeleteMapping(path = "/delete/{vehicleUsageId}")
+    public void deleteVehicleUsage(@PathVariable("vehicleUsageId") Long vehicleUsageId) {
+        this.vehicleUsageService.deleteVehicleUsage(vehicleUsageId);
     }
 
     private VehicleUsageDTO convertToDto(VehicleUsage vehicleUsage) {

@@ -1,5 +1,5 @@
 package de.chu.capacityapp.entity.model;
 
-public enum VehicleStatus {
+public enum VehicleState {
     AVAILABLE, ON_STREET, DESTROYED
 }

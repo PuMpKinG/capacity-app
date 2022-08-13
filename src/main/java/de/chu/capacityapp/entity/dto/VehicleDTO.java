@@ -1,9 +1,6 @@
 package de.chu.capacityapp.entity.dto;
 
-import de.chu.capacityapp.entity.model.VehicleStatus;
-
 import java.math.BigDecimal;
-import java.sql.Timestamp;
 
 public class VehicleDTO {
     private Long id;

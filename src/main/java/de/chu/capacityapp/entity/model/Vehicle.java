@@ -7,13 +7,15 @@ import java.util.Objects;
  * Klasse für den Autotyp: mit Hersteller und Modelangabe, sowie der Referenz zur Ladegröße
  */
 @Entity
-@Table(name = "vehicle")
+@Table(name = "vehicle", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"id", "company", "model"})
+})
 @SequenceGenerator(name = "vehicle_type_sequence", sequenceName = "vehicle_type_sequence", allocationSize = 1)
 public class Vehicle extends AbstractEntity {
-    @Column(name = "company", unique = true)
+    @Column(name = "company")
     private String company;
 
-    @Column(name = "model", unique = true)
+    @Column(name = "model")
     private String model;
 
     @Column(name = "length", nullable = false)
@@ -77,6 +79,7 @@ public class Vehicle extends AbstractEntity {
      * Unabhängig von der eingenommenen Höhe und Breite der Ladung ist dabei ein Lademeter immer ein Meter in Länge der
      * Ladefläche. Die Anzahl der LKW Lademeter entspricht also immer der Länge der Ladefläche
      * – er hat folglich 13,6 Lademeter (ldm).
+     *
      * @return
      */
     public Double getCapacity() {

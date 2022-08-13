@@ -42,31 +42,34 @@ VehicleType
 * id
 * company
 * model
-* capacity (transient)
-* loadCompartmentRef
-
-LoadCompartment
 * height
 * width
 * length
+* capacity (transient)
 
 
 ### Funktionen
-* Fahrzeugverwaltung
+* Fahrzeug Verwaltung 
   * Fahrzeug anlegen
   * Fahrzeug bearbeiten
   * Fahrzeug löschen
-* Fahzeugtypverwaltung
-  * Fahrzeugtyp anlegen
-  * Fahrzeugtyp bearbeiten
-  * Fahrzeugtyp löschen
-* Laderaumauslastung
+  
+* Fahrzeug-Bestand - Verwaltung
+  * Neues Fahrzeug im Bestand
+  * Fahrzeug aus dem Bestand löschen
+* Fahrzeug-Bestand - Laderaumauslastung
   * Fahrzeug beladen
   * Fahrzeug entladen
   * Ware umladen (extra Ansicht?)
   * Fahrzeugstatus anpassen
+* Filter / Sortierung
   * Liste sortieren (Auslastung, freie Kapazität)
   * Liste filtern (volle Fahrzeuge, Fahrzeug unterwegs, Fahrzeug defekt)
 
 
 ### Web-Ansicht
+
+
+## Fragen
+* Muss das @Transactional immer an jeder Methode geschrieben werden, oder gibt es eine andere Lösung?
+* Repository ist ein Interface. Gibt es fälle für eine Default-Implementierung oder nutzt man immer direkt das Interface wie in meinem Beispiel?

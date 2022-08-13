@@ -1,0 +1,30 @@
+###
+GET http://localhost:8081/api/vehicle
+Content-Type: application/json
+
+###
+POST http://localhost:8081/api/vehicle
+Content-Type: application/json
+
+{
+  "company": "Toyota",
+  "model": "Truck",
+  "length": "5.2",
+  "width": "2.4",
+  "height": "1.5"
+}
+
+###
+PUT http://localhost:8081/api/vehicle/update/{{vehicleId}}
+Content-Type: application/json
+
+{
+  "company": "Toyota",
+  "model": "Truck",
+  "length": "6",
+  "width": "6",
+  "height": "6"
+}
+
+###
+DELETE http://localhost:8081/api/vehicle/delete/{{vehicleId}}

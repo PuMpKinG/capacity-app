@@ -1,7 +1,5 @@
 package de.chu.capacityapp.entity.dto;
 
-import de.chu.capacityapp.entity.model.VehicleState;
-
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
@@ -11,7 +9,7 @@ public class VehicleUsageDTO {
     private Timestamp loadingTime;
     private Timestamp unloadingTime;
     private BigDecimal usedCapacity;
-    private VehicleState vehicleState;
+    private String vehicleState;
     private VehicleDTO vehicle;
 
     public Long getId() {
@@ -54,11 +52,11 @@ public class VehicleUsageDTO {
         this.usedCapacity = usedCapacity;
     }
 
-    public VehicleState getVehicleStatus() {
+    public String getVehicleState() {
         return vehicleState;
     }
 
-    public void setVehicleStatus(VehicleState vehicleState) {
+    public void setVehicleState(String vehicleState) {
         this.vehicleState = vehicleState;
     }
 

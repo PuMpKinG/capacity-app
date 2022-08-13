@@ -1,6 +1,8 @@
 package de.chu.capacityapp.web.controller;
 
+import de.chu.capacityapp.entity.dto.VehicleDTO;
 import de.chu.capacityapp.entity.dto.VehicleUsageDTO;
+import de.chu.capacityapp.entity.model.Vehicle;
 import de.chu.capacityapp.entity.model.VehicleState;
 import de.chu.capacityapp.entity.model.VehicleUsage;
 import de.chu.capacityapp.server.service.VehicleUsageService;
@@ -39,7 +41,7 @@ public class VehicleUsageController {
      * Erstellt eine neue VehicleUsage, es wurde also ein neues Fahrzeug erworben
      *
      * @param vehicleUsageDTO
-     * @return
+     * @return neues Fahrzeug im Bestand
      */
     @PostMapping
     public VehicleUsageDTO createNewVehicleUsage(@RequestBody VehicleUsageDTO vehicleUsageDTO) {
@@ -48,34 +50,63 @@ public class VehicleUsageController {
                         convertToModel(vehicleUsageDTO)));
     }
 
+    /**
+     * Beladen des Fahrzeugs
+     *
+     * @param vehicleUsageId
+     * @param ldm
+     */
     @PutMapping(path = "/{vehicleUsageId}/load/{ldm}")
     public void loadGoodsOnVehicle(@PathVariable("vehicleUsageId") Long vehicleUsageId,
                             @PathVariable("ldm") Double ldm) {
         this.vehicleUsageService.loadGoodsOnVehicle(vehicleUsageId, ldm);
     }
 
+    /**
+     * Entladen des Fahrzeugs
+     *
+     * @param vehicleUsageId
+     * @param ldm
+     */
     @PutMapping(path = "/{vehicleUsageId}/unload/{ldm}")
     public void unloadGoodsFromVehicle(@PathVariable("vehicleUsageId") Long vehicleUsageId,
                               @PathVariable("ldm") Double ldm) {
         this.vehicleUsageService.unloadGoodsFromVehicle(vehicleUsageId, ldm);
     }
 
+    /**
+     * Fahrzeug-Status aktualisieren: defekt, unterwegs oder im Lager
+     *
+     * @param vehicleUsageId
+     * @param state
+     */
     @PutMapping(path = "/{vehicleUsageId}/state/{state}")
     public void changeState(@PathVariable("vehicleUsageId") Long vehicleUsageId,
                             @PathVariable("state") VehicleState state) {
         this.vehicleUsageService.changeState(vehicleUsageId, state);
     }
 
+    /**
+     * Löscht das Fahrzeug aus dem Bestand
+     *
+     * @param vehicleUsageId
+     */
     @DeleteMapping(path = "/delete/{vehicleUsageId}")
     public void deleteVehicleUsage(@PathVariable("vehicleUsageId") Long vehicleUsageId) {
         this.vehicleUsageService.deleteVehicleUsage(vehicleUsageId);
     }
 
     private VehicleUsageDTO convertToDto(VehicleUsage vehicleUsage) {
-        return modelMapper.map(vehicleUsage, VehicleUsageDTO.class);
+        VehicleUsageDTO result = modelMapper.map(vehicleUsage, VehicleUsageDTO.class);
+        result.setVehicleState(vehicleUsage.getVehicleState().name());
+        result.setVehicle(modelMapper.map(vehicleUsage.getVehicleRefObj(), VehicleDTO.class));
+        return result;
     }
 
     private VehicleUsage convertToModel(VehicleUsageDTO dto) {
-        return modelMapper.map(dto, VehicleUsage.class);
+        VehicleUsage result = modelMapper.map(dto, VehicleUsage.class);
+        result.setVehicleState(VehicleState.valueOf(dto.getVehicleState()));
+        result.setVehicleRefObj(modelMapper.map(dto.getVehicle(), Vehicle.class));
+        return result;
     }
 }

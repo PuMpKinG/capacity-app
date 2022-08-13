@@ -1,0 +1,27 @@
+###
+GET http://localhost:8081/api/vehicle-usage
+Content-Type: application/json
+
+###
+POST http://localhost:8081/api/vehicle-usage
+Content-Type: application/json
+
+{
+  "lisencePlate": "AC KK 558",
+  "vehicleState": "AVAILABLE",
+  "vehicle": {
+    "id": "{{existingVehicleId}}"
+  }
+}
+
+###
+PUT http://localhost:8081/api/vehicle-usage/{{vehicleUsageId}}/load/{{ldm}}
+
+###
+PUT http://localhost:8081/api/vehicle-usage/{{vehicleUsageId}}/unload/{{ldm}}
+
+###
+PUT http://localhost:8081/api/vehicle-usage/{{vehicleUsageId}}/state/{{state}}
+
+###
+DELETE http://localhost:8081/api/vehicle-usage/delete/{{vehicleUsageId}}

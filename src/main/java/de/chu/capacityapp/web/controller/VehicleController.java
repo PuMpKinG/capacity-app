@@ -25,12 +25,21 @@ public class VehicleController {
         this.modelMapper = modelMapper;
     }
 
+    /**
+     * Gibt alle Fahrzeugmodelle aus der Datenbank zurück
+     * @return
+     */
     @GetMapping
     public List<VehicleDTO> getVehicles() {
         return this.vehicleService.getAllVehicles().stream()
                 .map(this::convertToDto).collect(Collectors.toList());
     }
 
+    /**
+     * Erstellt ein neues Fahrzeugmodell im System
+     * @param vehicleDTO
+     * @return
+     */
     @PostMapping
     public VehicleDTO createVehicle(@RequestBody VehicleDTO vehicleDTO) {
         return convertToDto(
@@ -38,13 +47,22 @@ public class VehicleController {
                         convertToModel(vehicleDTO)));
     }
 
-    @PutMapping(path = "/update/{vehicleId}/")
+    /**
+     * Update für ein vorhandenes Fahrzeugmodell
+     * @param vehicleId
+     * @param vehicleDTO
+     */
+    @PutMapping(path = "/update/{vehicleId}")
     public void updateVehicle(@PathVariable("vehicleId") Long vehicleId,
                               @RequestBody VehicleDTO vehicleDTO) {
         Vehicle update = convertToModel(vehicleDTO);
         this.vehicleService.updateVehicle(update, vehicleId);
     }
 
+    /**
+     * Löscht ein Fahrzeugmodell aus dem System
+     * @param vehicleId
+     */
     @DeleteMapping(path = "/delete/{vehicleId}")
     public void deleteVehicle(@PathVariable("vehicleId") Long vehicleId) {
         this.vehicleService.deleteVehicle(vehicleId);

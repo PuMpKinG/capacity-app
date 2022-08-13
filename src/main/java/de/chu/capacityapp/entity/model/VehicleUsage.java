@@ -8,7 +8,9 @@ import java.util.Objects;
  * Klasse für ein spezifisches Fahrzeug, welches sich im Bestand des Unternehmens befindet.
  */
 @Entity
-@Table(name = "vehicle_usage")
+@Table(name = "vehicle_usage",  uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"id", "license_plate"})
+})
 @SequenceGenerator(name = "vehicle_sequence", sequenceName = "vehicle_sequence", allocationSize = 1)
 public class VehicleUsage extends AbstractEntity {
 
@@ -18,11 +20,11 @@ public class VehicleUsage extends AbstractEntity {
     private Timestamp loadingTime;
     @Column(name = "unloading_time")
     private Timestamp unloadingTime;
-    @Column(name = "used_capacity")
-    private Double usedCapacity;
+    @Column(name = "used_capacity", nullable = false )
+    private Double usedCapacity = 0.0;
     @Column(name = "vehicle_state", nullable = false)
     private VehicleState vehicleState;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "vehicle_ref")
     private Vehicle vehicleRefObj;
 

@@ -1,0 +1,57 @@
+<h2>Fahrzeugbestand</h2>
+<div class="info">
+    <span>Neue Fahrzeuge können hier zum Fahrzeugbestand hinzugefügt oder gelöscht werden.</span>
+</div>
+
+<!-- https://stackblitz.com/angular/dnbermjydavk?file=app%2Ftable-overview-example.html -->
+<div class="example-header">
+    <mat-form-field>
+        <input matInput #filterInput (keyup)="applyFilter(filterInput.value)" placeholder="Filter">
+    </mat-form-field>
+</div>
+
+<div class="example-container mat-elevation-z8">
+
+    <mat-table [dataSource]="dataSource" matSort>
+
+        <ng-container matColumnDef="lisencePlate">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Kennzeichen </mat-header-cell>
+            <mat-cell *matCellDef="let row"> {{row.lisencePlate}} </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="capacity">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Lademeter (belegt / max) </mat-header-cell>
+            <mat-cell *matCellDef="let row"> {{ (row.usedCapacity || 0) + ' / ' +  (row.vehicle.capacity || 0)}} </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="vehicleState">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Status </mat-header-cell>
+            <mat-cell *matCellDef="let row"> {{row.vehicleState}} </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="vehicle">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Fahrzeugmodel </mat-header-cell>
+            <mat-cell *matCellDef="let row"> {{row.vehicle.company + ' ' + row.vehicle.model}} </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="delete">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Löschen </mat-header-cell>
+            <mat-cell *matCellDef="let row">
+                <button mat-icon-button color="accent" (click)="deleteUsage(row)">
+                    <mat-icon>delete</mat-icon>
+                </button>
+            </mat-cell>
+        </ng-container>
+
+
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns;">
+        </mat-row>
+    </mat-table>
+
+    <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+</div>
+
+<button class="btn" mat-flat-button color="primary"  (click)="openDialog()"> <mat-icon>add</mat-icon> Neues Fahrzeug in Bestand aufnehmen</button>
+
+

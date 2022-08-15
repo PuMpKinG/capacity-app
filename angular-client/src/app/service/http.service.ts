@@ -1,98 +1,70 @@
 import {Injectable} from '@angular/core';
-import {LOCALSTORAGE_WAKEUP_SETTING} from '../app.module';
-import {HttpClient, HttpErrorResponse} from '@angular/common/http';
-import {Observable, of, throwError} from 'rxjs';
-import {catchError, tap} from 'rxjs/operators';
-import {Esp32Response} from '../app.types';
-
-const HTTP_URL = 'http://';
+import {HttpClient, HttpErrorResponse, HttpHeaders} from '@angular/common/http';
+import {catchError, finalize, Observable, tap, throwError as _throw} from 'rxjs';
+import {LoggerService} from "./logger.service";
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root'
 })
 export class HttpService {
-  ipAdress: string;
-  esp32Info: Esp32Response;
-  connected: boolean;
 
-  // values
-  brightness: number;
-  wakeupLightDuration: number;
-  goodNightLightDuration: number;
-  // LED_COLORS...
-
-  constructor(private http: HttpClient) {
-    const settings = JSON.parse(localStorage.getItem(LOCALSTORAGE_WAKEUP_SETTING));
-    this.ipAdress = settings ? settings.ipAdress : null;
-  }
-
-  checkConnection(): Observable<Esp32Response> {
-    return this.http.get<Esp32Response>(HTTP_URL + this.ipAdress + '/connect')
-      .pipe(
-        tap(this.setValuesAfterServerConnected),
-        catchError(this.handleError)
-      );
-  }
-
-  toggleAlarm(switchOn: boolean) {
-    const param = switchOn ? '1' : '0';
-    return this.http.get(HTTP_URL + this.ipAdress + '/toggle-alarm?param=' + param);
-  }
-
-  setAlarmTime(alarmTime: string) {
-    return this.http.get(HTTP_URL + this.ipAdress + '/set-alarm-time?param=' + alarmTime);
-  }
-
-  // set light to color or off
-  setLight(hexColor: string, off?: boolean) {
-    if (off) {
-      hexColor = 'off';
-    } else {
-      hexColor = hexColor.replace('#', '');
+    constructor(private http: HttpClient, private log: LoggerService) {
     }
 
-    return this.http.get(HTTP_URL + this.ipAdress + '/set-light?param=' + hexColor);
-  }
-
-  setBrightness(brightness: number) {
-    brightness = Math.round(brightness / 100 * 255);
-    return this.http.get(HTTP_URL + this.ipAdress + '/set-brightness?param=' + brightness);
-  }
-
-  setValuesAfterServerConnected = (response: Esp32Response) => {
-    this.esp32Info = response;
-    this.esp32Info.return_value = null;
-    this.brightness = response.return_value * 255 * 100;
-    this.connected = true;
-  }
-
-  getEsp32InfoString(): string {
-    if (this.esp32Info) {
-      return 'ID: ' + this.esp32Info.id + ', name: '
-        + this.esp32Info.name + ', hardware: '
-        + this.esp32Info.hardware + ', connected: '
-        + this.esp32Info.connected;
+    get<ResponseType>(
+        serviceUrl: string,
+        additionalOptions: any = {}
+    ): Observable<ResponseType> {
+        return this.request('GET', serviceUrl, null, additionalOptions);
     }
-    return null;
-  }
 
-  private handleError = (error: HttpErrorResponse) => {
-    if (error.error instanceof ErrorEvent) {
-      // A client-side or network error occurred. Handle it accordingly.
-      console.error('An error occurred:', error.error.message);
-    } else {
-      // The backend returned an unsuccessful response code.
-      // The response body may contain clues as to what went wrong,
-      console.error(
-        `Backend returned code ${error.status}, ` +
-        `body was: ${error.error}`);
-
-      if (error.status === 0) {
-        this.esp32Info = null;
-      }
+    delete<ResponseType>(serviceUrl: string, request?: any): Observable<ResponseType> {
+        return this.request('DELETE', serviceUrl, request);
     }
-    // return an observable with a user-facing error message
-    return throwError(
-      'Something bad happened; please try again later.');
-  };
+
+    post<RequestType, ResponseType>(
+        request: RequestType,
+        serviceUrl: string,
+    ): Observable<ResponseType> {
+        return this.request('POST', serviceUrl, request);
+    }
+
+    put<RequestType, ResponseType>(
+        request: RequestType,
+        serviceUrl: string,
+    ): Observable<ResponseType> {
+        return this.request('PUT', serviceUrl, request);
+    }
+
+    private request<RequestType, ResponseType>(
+        method: string,
+        serviceUrl: string,
+        request?: RequestType,
+        additionalOptions: any = {}
+    ): Observable<ResponseType> {
+
+        let headers = new HttpHeaders().set('Content-Type', 'application/json');
+        const options = {...additionalOptions, body: request, headers: headers};
+        return this.http.request<ResponseType>(method, serviceUrl, options).pipe(
+            tap(this.log.debug),
+            catchError((error) => this.handleError(error, method, serviceUrl)),
+            finalize(() => {
+            })
+        );
+    }
+
+    private handleError = (error: HttpErrorResponse, method: string, serviceUrl: string): Observable<HttpErrorResponse> => {
+        switch (error.status) {
+            case 500:
+                this.log.error(error);
+                break;
+
+            default:
+                this.log.error(error);
+                break;
+        }
+
+        this.log.error(error);
+        return _throw(error);
+    };
 }

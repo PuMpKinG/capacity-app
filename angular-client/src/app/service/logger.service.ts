@@ -1,5 +1,4 @@
-import { Inject, Injectable, Optional } from '@angular/core';
-import { LOG_LEVEL } from '../injection.constants';
+import {Inject, Injectable, Optional} from '@angular/core';
 
 export enum LogLevel {
   TRACE = 0,
@@ -15,8 +14,8 @@ export enum LogLevel {
 export class LoggerService {
   private enabledLogLevel: LogLevel;
 
-  constructor(@Optional() @Inject(LOG_LEVEL) providedLogLevel: LogLevel) {
-    this.enabledLogLevel = providedLogLevel || LogLevel.TRACE;
+  constructor() {
+    this.enabledLogLevel = LogLevel.DEBUG;
     this.info('LoggerService initialized with LogLevel: ', LogLevel[this.enabledLogLevel]);
   }
 
@@ -45,7 +44,7 @@ export class LoggerService {
       return;
     }
     const timestamp = new Date().toTimeString().slice(0, 8) + ' ';
-    const level = (LogLevel[logLevel] + '      ').slice(0, 6); // TODO padEnd()
+    const level = (LogLevel[logLevel] + '      ').slice(0, 6);
 
     if (typeof message === 'string') {
       message = timestamp + level + message;

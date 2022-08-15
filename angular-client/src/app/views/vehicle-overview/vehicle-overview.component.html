@@ -1,1 +1,64 @@
-<p>vehicle-overview works!</p>
+<h2>Fahrzeugmodelle</h2>
+<div class="info">
+    <span>Fahrzeugmodelle können hier hinzugefügt, bearbeitet und gelöscht werden.</span>
+</div>
+
+<!-- https://stackblitz.com/angular/dnbermjydavk?file=app%2Ftable-overview-example.html -->
+<div class="example-header">
+    <mat-form-field>
+        <input matInput #filterInput (keyup)="applyFilter(filterInput.value)" placeholder="Filter">
+    </mat-form-field>
+</div>
+
+<div class="example-container mat-elevation-z8">
+
+    <mat-table [dataSource]="dataSource" matSort>
+
+        <ng-container matColumnDef="company">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Marke </mat-header-cell>
+            <mat-cell *matCellDef="let row"> {{row.company}} </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="model">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Modell </mat-header-cell>
+            <mat-cell *matCellDef="let row"> {{row.model}} </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="width">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Breite </mat-header-cell>
+            <mat-cell *matCellDef="let row"> {{row.width}} </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="length">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Länge </mat-header-cell>
+            <mat-cell *matCellDef="let row"> {{row.length}} </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="height">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Höhe </mat-header-cell>
+            <mat-cell *matCellDef="let row"> {{row.height}} </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="modify">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>  </mat-header-cell>
+            <mat-cell *matCellDef="let row">
+                <button class="p-r-s" mat-icon-button color="accent" (click)="deleteVehicle(row)">
+                    <mat-icon>delete</mat-icon>
+                </button>
+                <button mat-icon-button color="primary" (click)="editVehicle(row)">
+                    <mat-icon>edit</mat-icon>
+                </button>
+            </mat-cell>
+        </ng-container>
+
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns;">
+        </mat-row>
+    </mat-table>
+
+    <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+</div>
+
+<button class="btn" mat-flat-button color="primary"  (click)="openDialog()"> <mat-icon>add</mat-icon> Neues Fahrzeugmodell</button>
+
+

@@ -1,6 +1,8 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Inject, OnInit} from '@angular/core';
 import {Vehicle} from "../../app.types";
 import {FormControl, Validators} from "@angular/forms";
+import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
+import {ConfirmDialogModel} from "../comfirm-dialog/confirm-dialog.component";
 
 @Component({
     selector: 'app-new-usage-dialog',
@@ -34,14 +36,14 @@ import {FormControl, Validators} from "@angular/forms";
 
                     <mat-form-field appearance="fill" class="p-r-s">
                         <mat-label>Länge</mat-label>
-                        <input matInput name="height" [(ngModel)]="vehicle.length" placeholder="Länge"
+                        <input matInput name="length" [(ngModel)]="vehicle.length" placeholder="Länge"
                                [formControl]="requiredFormControl" required>
                         <mat-error *ngIf="requiredFormControl.invalid">{{getErrorMessage()}}</mat-error>
                     </mat-form-field>
 
                     <mat-form-field appearance="fill">
                         <mat-label>Höhe</mat-label>
-                        <input matInput name="length" [(ngModel)]="vehicle.height" placeholder="Höhe"
+                        <input matInput name="height" [(ngModel)]="vehicle.height" placeholder="Höhe"
                                [formControl]="requiredFormControl" required>
                         <mat-error *ngIf="requiredFormControl.invalid">{{getErrorMessage()}}</mat-error>
                     </mat-form-field>
@@ -56,14 +58,13 @@ import {FormControl, Validators} from "@angular/forms";
     `,
     styles: []
 })
-export class NewUsageDialogComponent {
+export class NewVehicleDialog {
 
-    vehicle: Vehicle;
-
+    vehicle: Vehicle = new Vehicle();
     requiredFormControl = new FormControl('', [Validators.required]);
 
-    constructor() {
-        this.vehicle = new Vehicle();
+    constructor(@Inject(MAT_DIALOG_DATA) public data: Vehicle) {
+            this.vehicle = Object.assign(this.vehicle, data);
     }
 
     getErrorMessage() {

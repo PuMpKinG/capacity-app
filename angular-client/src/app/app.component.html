@@ -1,0 +1,30 @@
+<mat-toolbar color="primary" class="example-toolbar">
+    <button mat-icon-button (click)="isExpanded = !isExpanded">
+        <mat-icon>menu</mat-icon>
+    </button>
+    <h1 class="example-app-name">Laderaumauslastung</h1>
+</mat-toolbar>
+<mat-sidenav-container class="example-container" autosize>
+    <mat-sidenav #sidenav class="example-sidenav" mode="side" opened="true" (mouseenter)="mouseenter()"
+                 (mouseleave)="mouseleave()">
+        <mat-nav-list>
+            <mat-list-item (click)="openLoadCapacity()" class="parent">
+                <span class="full-width" *ngIf="isExpanded || isShowing">Auslastung</span>
+                <mat-icon mat-list-icon>query_stats</mat-icon>
+            </mat-list-item>
+            <mat-list-item (click)="openVehicleUsage()" class="parent">
+                <span class="full-width" *ngIf="isExpanded || isShowing">Fahrzeuge im Bestand</span>
+                <mat-icon mat-list-icon>local_shipping</mat-icon>
+            </mat-list-item>
+            <mat-list-item (click)="openVehicleModel()" class="parent">
+                <span class="full-width" *ngIf="isExpanded || isShowing">Fahrzeug Modelle</span>
+                <mat-icon mat-list-icon>commute</mat-icon>
+            </mat-list-item>
+        </mat-nav-list>
+    </mat-sidenav>
+
+    <div class="example-sidenav-content">
+        <router-outlet></router-outlet>
+    </div>
+
+</mat-sidenav-container>

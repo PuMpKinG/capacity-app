@@ -6,9 +6,11 @@ public class VehicleDTO {
     private Long id;
     private String company;
     private String model;
-    private BigDecimal length;
-    private BigDecimal width;
-    private BigDecimal height;
+    private Double length;
+    private Double width;
+    private Double height;
+
+    private Double capacity;
 
     public Long getId() {
         return id;
@@ -34,27 +36,35 @@ public class VehicleDTO {
         this.model = model;
     }
 
-    public BigDecimal getLength() {
+    public Double getLength() {
         return length;
     }
 
-    public void setLength(BigDecimal length) {
+    public void setLength(Double length) {
         this.length = length;
     }
 
-    public BigDecimal getWidth() {
+    public Double getWidth() {
         return width;
     }
 
-    public void setWidth(BigDecimal width) {
+    public void setWidth(Double width) {
         this.width = width;
     }
 
-    public BigDecimal getHeight() {
+    public Double getHeight() {
         return height;
     }
 
-    public void setHeight(BigDecimal height) {
+    public void setHeight(Double height) {
         this.height = height;
+    }
+
+    public Double getCapacity() {
+        return capacity;
+    }
+
+    public void setCapacity(Double capacity) {
+        this.capacity = capacity;
     }
 }

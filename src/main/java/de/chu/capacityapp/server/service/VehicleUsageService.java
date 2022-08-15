@@ -60,6 +60,7 @@ public class VehicleUsageService {
 
         usage.setVehicleRefObj(vehicle.get());
         usage.setUsedCapacity(usage.getUsedCapacity() != null ? usage.getUsedCapacity() : 0.0);
+        usage.setVehicleState(VehicleState.AVAILABLE);
         return vehicleUsageRepository.save(usage);
     }
 

@@ -1,8 +1,8 @@
-import { Converter, Prototype } from './common.types';
-
 /**
  * Util provides some re-usable convenience methods for JavaScript/TypeScript.
  */
+import {Converter, Prototype} from "./app.types";
+
 export class Util {
   /**
    * Create a deep copy of an object. The result has no type information
@@ -42,9 +42,6 @@ export class Util {
     }
     return objects;
   }
-
-  static findBy = <Type>(objects: Type[], callback: (object: Type) => boolean): Type =>
-    (objects && objects.find((o) => callback(o))) || undefined;
 
   static filterBy = <Type>(objects: Type[], callback: (object: Type) => boolean): Type[] =>
     (objects && objects.filter((o) => callback(o))) || [];

@@ -1,0 +1,38 @@
+import {Util} from './util';
+
+export type Prototype<Type> = new () => Type;
+export type Converter<Type> = (object: any) => Type;
+
+export class Vehicle {
+    id: number | undefined;
+    company: string | undefined;
+    model: string | undefined;
+    capacity: number | undefined;
+    length: number | undefined;
+    width: number | undefined;
+    height: number | undefined;
+
+    static convert: Converter<Vehicle> = (object: any) => {
+        return Util.convertTo(Vehicle, object);
+    };
+
+    static convertArray: Converter<Vehicle[]> = (objects: any[]) => Util.convertArray(Vehicle.convert, objects);
+}
+
+export class VehicleUsage {
+    id: number | undefined;
+    lisencePlate: string | undefined;
+    loadingTime: Date | undefined;
+    unloadingTime: Date | undefined;
+    usedCapacity: number | undefined;
+    vehicleState: string | undefined;
+    vehicle: Vehicle | undefined;
+
+    static convert: Converter<VehicleUsage> = (object: any) => {
+        let result: VehicleUsage = Util.convertTo(VehicleUsage, object);
+        result.vehicle = Util.convertTo(Vehicle, object.vehicle);
+        return result;
+    };
+
+    static convertArray: Converter<VehicleUsage[]> = (objects: any[]) => Util.convertArray(VehicleUsage.convert, objects);
+}

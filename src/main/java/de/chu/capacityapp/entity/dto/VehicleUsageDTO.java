@@ -8,7 +8,7 @@ public class VehicleUsageDTO {
     private String lisencePlate;
     private Timestamp loadingTime;
     private Timestamp unloadingTime;
-    private BigDecimal usedCapacity;
+    private Double usedCapacity;
     private String vehicleState;
     private VehicleDTO vehicle;
 
@@ -44,11 +44,11 @@ public class VehicleUsageDTO {
         this.unloadingTime = unloadingTime;
     }
 
-    public BigDecimal getUsedCapacity() {
+    public Double getUsedCapacity() {
         return usedCapacity;
     }
 
-    public void setUsedCapacity(BigDecimal usedCapacity) {
+    public void setUsedCapacity(Double usedCapacity) {
         this.usedCapacity = usedCapacity;
     }
 

@@ -58,7 +58,7 @@ public class VehicleUsageController {
      */
     @PutMapping(path = "/{vehicleUsageId}/load/{ldm}")
     public void loadGoodsOnVehicle(@PathVariable("vehicleUsageId") Long vehicleUsageId,
-                            @PathVariable("ldm") Double ldm) {
+                                   @PathVariable("ldm") Double ldm) {
         this.vehicleUsageService.loadGoodsOnVehicle(vehicleUsageId, ldm);
     }
 
@@ -70,7 +70,7 @@ public class VehicleUsageController {
      */
     @PutMapping(path = "/{vehicleUsageId}/unload/{ldm}")
     public void unloadGoodsFromVehicle(@PathVariable("vehicleUsageId") Long vehicleUsageId,
-                              @PathVariable("ldm") Double ldm) {
+                                       @PathVariable("ldm") Double ldm) {
         this.vehicleUsageService.unloadGoodsFromVehicle(vehicleUsageId, ldm);
     }
 
@@ -105,8 +105,12 @@ public class VehicleUsageController {
 
     private VehicleUsage convertToModel(VehicleUsageDTO dto) {
         VehicleUsage result = modelMapper.map(dto, VehicleUsage.class);
-        result.setVehicleState(VehicleState.valueOf(dto.getVehicleState()));
-        result.setVehicleRefObj(modelMapper.map(dto.getVehicle(), Vehicle.class));
+        if (dto.getVehicleState() != null) {
+            result.setVehicleState(VehicleState.valueOf(dto.getVehicleState()));
+        }
+        if (dto.getVehicle() != null) {
+            result.setVehicleRefObj(modelMapper.map(dto.getVehicle(), Vehicle.class));
+        }
         return result;
     }
 }

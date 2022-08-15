@@ -57,12 +57,12 @@ export class HttpService {
         switch (error.status) {
             case 500:
                 this.log.error(error);
-                alert(error.message);
+                alert(error.error.message);
                 break;
 
             default:
                 this.log.error(error);
-                alert(error.message);
+                alert(error.error.message);
                 break;
         }
 

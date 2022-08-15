@@ -13,7 +13,7 @@ import {SelectionModel} from "@angular/cdk/collections";
     templateUrl: './load-capacity.component.html',
     styleUrls: ['./load-capacity.component.scss']
 })
-export class LoadCapacityComponent implements OnInit, AfterViewInit {
+export class LoadCapacityComponent implements AfterViewInit {
 
     filterOnAvailable: boolean = false;
     displayedColumns = ['lisencePlate', 'usedCapacity', 'freeCapacity', 'maxCapacity', 'capacity', 'loadingTime', 'unloadingTime', 'vehicleState', 'vehicle', 'measure'];
@@ -30,19 +30,17 @@ export class LoadCapacityComponent implements OnInit, AfterViewInit {
     constructor(private loadCapacityService: LoadCapacityService, public dialog: MatDialog, private cdr: ChangeDetectorRef) {
     }
 
-    ngOnInit(): void {
-        this.loadCapacityService.getVehiclesUsages().subscribe((usages) => {
-            this.cachedUsages = usages;
-            this.dataSource = new MatTableDataSource(this.cachedUsages);
-        })
-    }
-
     /**
      * Set the paginator and sort after the view init since this component will
      * be able to query its view for the initialized paginator and sort.
      */
     ngAfterViewInit() {
-        this.dataSource.sort = this.sort;
+        this.loadCapacityService.getVehiclesUsages().subscribe((usages) => {
+            this.cachedUsages = usages;
+            this.dataSource = new MatTableDataSource(this.cachedUsages);
+            this.dataSource.sort = this.sort;
+        })
+
     }
 
     applyFilter(filterValue: string) {
@@ -82,10 +80,10 @@ export class LoadCapacityComponent implements OnInit, AfterViewInit {
             if (result) {
                 let toUnload = Number.parseFloat(result)
                 let newLoad = this.selected.usedCapacity - toUnload;
-                if (newLoad < 0) {
-                    alert("Fahrzeug hat nur weniger Lademeter zum Entladen zur Verfügung: (" + toUnload + ")");
-                    return;
-                }
+                // if (newLoad < 0) {
+                //     alert("Fahrzeug hat nur weniger Lademeter zum Entladen zur Verfügung: (" + toUnload + ")");
+                //     return;
+                // }
 
                 this.loadCapacityService.unloadGoodsOnVehicle(this.selected, toUnload).subscribe(this.updateInTable);
             }
@@ -131,6 +129,10 @@ export class LoadCapacityComponent implements OnInit, AfterViewInit {
             this.cachedUsages[idx] = update;
         }
         this.dataSource.data = [...this.cachedUsages];
+
+        if (this.filterOnAvailable) {
+            this.filterAvailableChanged();
+        }
     }
 
 

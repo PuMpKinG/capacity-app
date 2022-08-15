@@ -16,7 +16,7 @@ import {NewVehicleUsageDialogComponent} from "../../dialog/new-vehicle-dialog/ne
     templateUrl: './vehicle-overview.component.html',
     styleUrls: ['./vehicle-overview.component.scss']
 })
-export class VehicleOverviewComponent implements OnInit, AfterViewInit {
+export class VehicleOverviewComponent implements  AfterViewInit {
 
     displayedColumns = ['company', 'model', 'width', 'length', 'height', 'modify'];
     dataSource: MatTableDataSource<Vehicle>;
@@ -27,29 +27,39 @@ export class VehicleOverviewComponent implements OnInit, AfterViewInit {
     constructor(private vehicleService: VehicleOverviewService, public dialog: MatDialog) {
     }
 
-    ngOnInit(): void {
-        this.vehicleService.getVehicles().subscribe((vehicles) => {
-            this.dataSource = new MatTableDataSource(vehicles);
-        })
-    }
-
     /**
      * Set the paginator and sort after the view init since this component will
      * be able to query its view for the initialized paginator and sort.
      */
     ngAfterViewInit() {
-        this.dataSource.paginator = this.paginator;
-        this.dataSource.sort = this.sort;
+        this.vehicleService.getVehicles().subscribe((vehicles) => {
+            this.dataSource = new MatTableDataSource(vehicles);
+            this.dataSource.paginator = this.paginator;
+            this.dataSource.sort = this.sort;
+        })
     }
 
     openDialog(vehicle?: Vehicle) {
-        const dialogRef = this.dialog.open(NewVehicleDialog, {data: vehicle ? vehicle : new Vehicle()});
+        const data =  vehicle ? vehicle : new Vehicle()
+        const dialogRef = this.dialog.open(NewVehicleDialog, {data: data});
 
         dialogRef.afterClosed().subscribe((result: Vehicle) => {
-            console.log(result);
-            this.vehicleService.createVehicle(result).subscribe((response: Vehicle) => {
-                this.dataSource.data = [...this.dataSource.data, response];
-            })
+            if (result) {
+                console.log(result);
+                if (result.id) {
+                    this.vehicleService.updateVehicle(result).subscribe((response: Vehicle) => {
+                        const idx = this.dataSource.data.findIndex(itm => itm.id === response.id);
+                        if (idx) {
+                            this.dataSource.data[idx] = response;
+                        }
+                        this.dataSource.data = [...this.dataSource.data];
+                    })
+                } else {
+                    this.vehicleService.createVehicle(result).subscribe((response: Vehicle) => {
+                        this.dataSource.data = [...this.dataSource.data, response];
+                    })
+                }
+            }
         });
     }
 

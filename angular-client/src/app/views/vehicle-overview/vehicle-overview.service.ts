@@ -22,8 +22,8 @@ export class VehicleOverviewService {
         return this.http.post<Vehicle, Vehicle>(newVehicle, this.API_URL + '/vehicle').pipe(map(Vehicle.convert));
     }
 
-    updateVehicle(update: Vehicle) {
-        return this.http.put<Vehicle, undefined>(update, this.API_URL + '/vehicle/update/' + update.id);
+    updateVehicle(update: Vehicle): Observable<Vehicle> {
+        return this.http.put<Vehicle, Vehicle>(update, this.API_URL + '/vehicle/update/' + update.id);
     }
 
     deleteVehicle(toDelete: Vehicle){

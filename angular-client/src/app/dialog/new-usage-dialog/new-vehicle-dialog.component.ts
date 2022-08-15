@@ -15,37 +15,38 @@ import {ConfirmDialogModel} from "../comfirm-dialog/confirm-dialog.component";
                     <mat-form-field appearance="fill" class="p-r-s">
                         <mat-label>Marke</mat-label>
                         <input matInput name="company" [(ngModel)]="vehicle.company" placeholder="Marke"
-                               [formControl]="requiredFormControl" required>
-                        <mat-error *ngIf="requiredFormControl.invalid">{{getErrorMessage()}}</mat-error>
+                               [formControl]="companyFormControl" required>
+                        <mat-error *ngIf="companyFormControl.invalid">{{getErrorMessage()}}</mat-error>
                     </mat-form-field>
+                    
                     <mat-form-field appearance="fill">
                         <mat-label>Modell</mat-label>
                         <input matInput name="model" [(ngModel)]="vehicle.model" placeholder="Modell"
-                               [formControl]="requiredFormControl"
+                               [formControl]="modelFormControl"
                                required>
-                        <mat-error *ngIf="requiredFormControl.invalid">{{getErrorMessage()}}</mat-error>
+                        <mat-error *ngIf="modelFormControl.invalid">{{getErrorMessage()}}</mat-error>
                     </mat-form-field>
                 </p>
                 <p>
                     <mat-form-field appearance="fill" class="p-r-s">
                         <mat-label>Breite</mat-label>
                         <input matInput name="width" [(ngModel)]="vehicle.width" placeholder="Breite"
-                               [formControl]="requiredFormControl" required>
-                        <mat-error *ngIf="requiredFormControl.invalid">{{getErrorMessage()}}</mat-error>
+                               [formControl]="widthFormControl" required>
+                        <mat-error *ngIf="widthFormControl.invalid">{{getErrorMessage()}}</mat-error>
                     </mat-form-field>
 
                     <mat-form-field appearance="fill" class="p-r-s">
                         <mat-label>Länge</mat-label>
                         <input matInput name="length" [(ngModel)]="vehicle.length" placeholder="Länge"
-                               [formControl]="requiredFormControl" required>
-                        <mat-error *ngIf="requiredFormControl.invalid">{{getErrorMessage()}}</mat-error>
+                               [formControl]="lengthFormControl" required>
+                        <mat-error *ngIf="lengthFormControl.invalid">{{getErrorMessage()}}</mat-error>
                     </mat-form-field>
 
                     <mat-form-field appearance="fill">
                         <mat-label>Höhe</mat-label>
                         <input matInput name="height" [(ngModel)]="vehicle.height" placeholder="Höhe"
-                               [formControl]="requiredFormControl" required>
-                        <mat-error *ngIf="requiredFormControl.invalid">{{getErrorMessage()}}</mat-error>
+                               [formControl]="heightFormControl" required>
+                        <mat-error *ngIf="heightFormControl.invalid">{{getErrorMessage()}}</mat-error>
                     </mat-form-field>
                 </p>
             </form>
@@ -61,15 +62,31 @@ import {ConfirmDialogModel} from "../comfirm-dialog/confirm-dialog.component";
 export class NewVehicleDialog {
 
     vehicle: Vehicle = new Vehicle();
-    requiredFormControl = new FormControl('', [Validators.required]);
+    companyFormControl = new FormControl('', [Validators.required]);
+    modelFormControl = new FormControl('', [Validators.required]);
+    lengthFormControl = new FormControl('', [Validators.required]);
+    widthFormControl = new FormControl('', [Validators.required]);
+    heightFormControl = new FormControl('', [Validators.required]);
 
     constructor(@Inject(MAT_DIALOG_DATA) public data: Vehicle) {
             this.vehicle = Object.assign(this.vehicle, data);
     }
 
     getErrorMessage() {
-        if (this.requiredFormControl?.hasError('required')) {
-            return 'You must enter a value';
+        if (this.companyFormControl?.hasError('required')) {
+            return 'Hersteller angeben';
+        }
+        if (this.modelFormControl?.hasError('required')) {
+            return 'Modell angeben';
+        }
+        if (this.lengthFormControl?.hasError('required')) {
+            return 'Länge angeben';
+        }
+        if (this.widthFormControl?.hasError('required')) {
+            return 'Breite angeben';
+        }
+        if (this.heightFormControl?.hasError('required')) {
+            return 'Höhe angeben';
         }
 
         return '';

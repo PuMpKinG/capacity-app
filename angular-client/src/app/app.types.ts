@@ -26,7 +26,20 @@ export class VehicleUsage {
     unloadingTime: Date | undefined;
     usedCapacity: number | 0;
     vehicleState: string | undefined;
-    vehicle: Vehicle | undefined;
+    vehicle: Vehicle;
+
+    // virtual properties
+    get freeCapacity() {
+        return this.vehicle.capacity - this.usedCapacity;
+    }
+
+    get percentageCapacity() {
+        return 100 / this.vehicle.capacity * this.usedCapacity;
+    }
+
+    get maxCapacity(){
+        return this.vehicle.capacity;
+    }
 
     static convert: Converter<VehicleUsage> = (object: any) => {
         let result: VehicleUsage = Util.convertTo(VehicleUsage, object);

@@ -14,21 +14,21 @@ import {VehicleOverviewService} from "../../views/vehicle-overview/vehicle-overv
                     <mat-form-field appearance="fill" class="p-r-s">
                         <mat-label>Kennzeichen</mat-label>
                         <input matInput name="lisencePlate" [(ngModel)]="vehicleUsage.lisencePlate" placeholder="Kennzeichen"
-                               [formControl]="requiredFormControl" required>
-                        <mat-error *ngIf="requiredFormControl.invalid">{{getErrorMessage()}}</mat-error>
+                               [formControl]="licenseFormControl" required>
+                        <mat-error *ngIf="licenseFormControl.invalid">{{getErrorMessage()}}</mat-error>
                     </mat-form-field>
                 </p>
                 <p>
                     <mat-form-field appearance="fill" class="p-r-s">
                         <mat-label>Modell</mat-label>
-                        <mat-select [formControl]="requiredFormControl" required 
+                        <mat-select [formControl]="vehicledFormControl" required 
                                     [(ngModel)]="selectedModel" (selectionChange)="selectionChanged()">
                             <mat-option>--</mat-option>
                             <mat-option *ngFor="let vehicle of availableVehicles" [value]="vehicle">
                                 {{vehicle.company + ' ' + vehicle.model}}
                             </mat-option>
                         </mat-select>
-                        <mat-error *ngIf="requiredFormControl.invalid">{{getErrorMessage()}}</mat-error>
+                        <mat-error *ngIf="vehicledFormControl.invalid">{{getErrorMessage()}}</mat-error>
                     </mat-form-field>
                 </p>
             </form>
@@ -47,7 +47,8 @@ export class NewVehicleUsageDialogComponent implements OnInit{
     availableVehicles: Vehicle[] = [];
     selectedModel: Vehicle;
     vehicleUsage: VehicleUsage;
-    requiredFormControl = new FormControl('', [Validators.required]);
+    licenseFormControl = new FormControl('', [Validators.required]);
+    vehicledFormControl = new FormControl('', [Validators.required]);
 
     constructor(private vehicleService: VehicleOverviewService) {
         this.vehicleUsage = new VehicleUsage();
@@ -64,8 +65,12 @@ export class NewVehicleUsageDialogComponent implements OnInit{
     }
 
     getErrorMessage() {
-        if (this.requiredFormControl?.hasError('required')) {
-            return 'You must enter a value';
+        if (this.licenseFormControl?.hasError('required')) {
+            return 'Kennzeichen angeben';
+        }
+
+        if(this.vehicledFormControl?.hasError('required')) {
+            return 'Fahrzeugmodell auswählen';
         }
 
         return '';

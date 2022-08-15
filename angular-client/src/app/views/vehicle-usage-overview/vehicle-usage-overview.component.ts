@@ -7,6 +7,7 @@ import {MatSort} from "@angular/material/sort";
 import {NewVehicleUsageDialogComponent} from "../../dialog/new-vehicle-dialog/new-vehicle-usage-dialog.component";
 import {ConfirmDialogComponent, ConfirmDialogModel} from "../../dialog/comfirm-dialog/confirm-dialog.component";
 import {VehicleUsageOverviewServices} from "./vehicle-usage-overview.service";
+import {Subscription} from "rxjs";
 
 
 @Component({
@@ -14,20 +15,15 @@ import {VehicleUsageOverviewServices} from "./vehicle-usage-overview.service";
     templateUrl: './vehicle-usage-overview.component.html',
     styleUrls: ['./vehicle-usage-overview.component.scss']
 })
-export class VehicleUsageOverviewComponent implements OnInit, AfterViewInit {
+export class VehicleUsageOverviewComponent implements AfterViewInit {
 
     displayedColumns = ['lisencePlate', 'capacity', 'vehicleState', 'vehicle', 'delete'];
     dataSource: MatTableDataSource<VehicleUsage>;
 
     @ViewChild(MatSort, {static: false}) sort: MatSort;
+    @ViewChild(MatPaginator, {static: false}) paginator: MatPaginator;
 
     constructor(private usageService: VehicleUsageOverviewServices, public dialog: MatDialog) {
-    }
-
-    ngOnInit(): void {
-        this.usageService.getVehiclesUsages().subscribe((usage) => {
-            this.dataSource = new MatTableDataSource(usage);
-        })
     }
 
     /**
@@ -35,17 +31,23 @@ export class VehicleUsageOverviewComponent implements OnInit, AfterViewInit {
      * be able to query its view for the initialized paginator and sort.
      */
     ngAfterViewInit() {
-        this.dataSource.sort = this.sort;
+        this.usageService.getVehiclesUsages().subscribe((usage) => {
+            this.dataSource = new MatTableDataSource(usage);
+            this.dataSource.paginator = this.paginator;
+            this.dataSource.sort = this.sort;
+        })
     }
 
     openDialog() {
         const dialogRef = this.dialog.open(NewVehicleUsageDialogComponent);
 
         dialogRef.afterClosed().subscribe((result: VehicleUsage) => {
-            console.log(result);
-            this.usageService.createVehicleUsage(result).subscribe((response: VehicleUsage) => {
-                this.dataSource.data = [...this.dataSource.data, response];
-            })
+            if (result) {
+                console.log(result);
+                this.usageService.createVehicleUsage(result).subscribe((response: VehicleUsage) => {
+                    this.dataSource.data = [...this.dataSource.data, response];
+                })
+            }
         });
     }
 

@@ -26,6 +26,7 @@ import {LoadCapacityComponent} from "./views/load-capacity/load-capacity.compone
 import {MatProgressBarModule} from "@angular/material/progress-bar";
 import { PromptDialogComponent } from './dialog/prompt-dialog/prompt-dialog.component';
 import {MatCheckboxModule} from "@angular/material/checkbox";
+import {MatSortModule} from "@angular/material/sort";
 
 @NgModule({
     declarations: [
@@ -57,7 +58,8 @@ import {MatCheckboxModule} from "@angular/material/checkbox";
         FormsModule,
         MatSelectModule,
         MatProgressBarModule,
-        MatCheckboxModule
+        MatCheckboxModule,
+        MatSortModule
     ],
     providers: [],
     bootstrap: [AppComponent],

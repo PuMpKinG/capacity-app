@@ -10,6 +10,12 @@
     </mat-form-field>
 </div>
 
+<div class="header">
+    <mat-checkbox [(ngModel)]="filterOnAvailable" (change)="filterAvailableChanged()">Nur
+        Fahrzeuge mit freien Lagermeter und im Lager anzeigen?
+    </mat-checkbox>
+</div>
+
 <div class="container mat-elevation-z8">
 
     <div>
@@ -49,20 +55,21 @@
 
         <ng-container matColumnDef="freeCapacity">
             <mat-header-cell *matHeaderCellDef mat-sort-header> Lademeter frei</mat-header-cell>
-            <mat-cell *matCellDef="let row"> {{ (row.vehicle.capacity - (row.usedCapacity || 0) )| number:'1.2-2' }} </mat-cell>
+            <mat-cell *matCellDef="let row"> {{ row.freeCapacity | number:'1.2-2' }} </mat-cell>
         </ng-container>
 
         <ng-container matColumnDef="maxCapacity">
             <mat-header-cell *matHeaderCellDef mat-sort-header> Lademeter max</mat-header-cell>
-            <mat-cell *matCellDef="let row"> {{ row.vehicle.capacity | number:'1.2-2' }} </mat-cell>
+            <mat-cell *matCellDef="let row"> {{ row.maxCapacity | number:'1.2-2' }} </mat-cell>
         </ng-container>
 
 
         <ng-container matColumnDef="capacity">
             <mat-header-cell *matHeaderCellDef mat-sort-header> Auslastung (%)</mat-header-cell>
             <mat-cell *matCellDef="let row">
+                <label>{{(row.percentageCapacity | number:'1.0-0') + '%'}} </label>
                 <mat-progress-bar mode="determinate" style="margin-right: 20px; margin-left: 5px"
-                                  value="{{ 100 / (row.vehicle.capacity) * (row.usedCapacity || 0) }}"></mat-progress-bar>
+                                  value="{{ row.percentageCapacity }}"></mat-progress-bar>
             </mat-cell>
         </ng-container>
 
@@ -88,16 +95,16 @@
 
         <ng-container matColumnDef="measure">
             <mat-header-cell *matHeaderCellDef mat-sort-header> Maße Laderaum</mat-header-cell>
-            <mat-cell *matCellDef="let row"> {{ 'Länge: ' + row.vehicle.length + ', Breite: ' + row.vehicle.width + ', Höhe: ' + row.vehicle.height }} </mat-cell>
+            <mat-cell
+                    *matCellDef="let row"> {{ 'Länge: ' + row.vehicle.length + ', Breite: ' + row.vehicle.width + ', Höhe: ' + row.vehicle.height }} </mat-cell>
         </ng-container>
 
         <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-        <mat-row *matRowDef="let row; columns: displayedColumns;"  [ngClass]="{ 'selected': selection.isSelected(row)}"
+        <mat-row *matRowDef="let row; columns: displayedColumns;" [ngClass]="{ 'selected': selection.isSelected(row)}"
                  (click)="selection.select(row)">
         </mat-row>
     </mat-table>
 
-    <mat-checkbox class="filterAvialable" [(ngModel)]="filterOnAvailable" (change)="filterAvailableChanged()" >Nur Fahrzeuge mit freien Lagermeter und im Lager anzeigen?</mat-checkbox>
 
 </div>
 

@@ -24,6 +24,22 @@ Domaine:
 
 Unser Ziel mit dieser Aufgabe ist es Deine Arbeitsweise kennenzulernen und Deine Entscheidungen für bestimmte Vorgehensweisen zu verstehen.
 
+## Starten
+Zum Starten wird eine postgres Datenbank benötigt mit folgenden Tabelle:
+```
+spring.datasource.url=jdbc:postgresql://localhost:5432/capacityapp
+spring.datasource.username=capacityapp
+spring.datasource.password=lol123
+```
+
+Anschließend einfach den Spring Boot Dev-Server starten und die Applikation ist erreichbar unter:
+
+http://localhost:8081/
+
+Das Angular-Projekt wurde deployed in den static Order unter resources von Spring Boot gelegt und ist somit als Startseite sichtbar.
+Die REST-Aufrufe starten alle mit der Subdomain /api/
+
+
 ## Umsetzung
 Wie folgt wird das ganze umgesetzt:
 
@@ -71,7 +87,14 @@ VehicleType
 
 
 ### Web-Ansicht
+Wurde mit Angular gelöst, da keine Bedingungen gestellt wurden
 
+
+### Bibliotheken / Frameworks
+- Spring Boot
+- ModelMapper http://modelmapper.org/
+- Angular https://angular.io/
+- Angular Material Design Komponenten https://material.angular.io/
 
 ## Fragen
 * Muss das @Transactional immer an jeder Methode geschrieben werden, oder gibt es eine andere Lösung?

@@ -3,6 +3,8 @@ package de.chu.capacityapp.server.service;
 import de.chu.capacityapp.entity.model.Vehicle;
 import de.chu.capacityapp.entity.model.VehicleState;
 import de.chu.capacityapp.entity.model.VehicleUsage;
+import de.chu.capacityapp.server.error.CapacityAppError;
+import de.chu.capacityapp.server.error.CapacityAppException;
 import de.chu.capacityapp.server.repository.VehicleRepository;
 import de.chu.capacityapp.server.repository.VehicleUsageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,8 +13,12 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import static de.chu.capacityapp.server.error.CapacityAppError.USAGE_EXISTS;
+import static de.chu.capacityapp.server.error.CapacityAppError.NOT_FOUND;
 
 @Service
 public class VehicleUsageService {
@@ -32,7 +38,10 @@ public class VehicleUsageService {
      *
      * @return Fahrzeuge
      */
-    public List<VehicleUsage> getAllVehicleUsages() {
+    public List<VehicleUsage> getAllVehicleUsages(boolean filterOnAvailable) {
+        if (filterOnAvailable) {
+            return vehicleUsageRepository.findAllByFilterOnAvailable(VehicleState.AVAILABLE).orElseGet(ArrayList::new);
+        }
         return vehicleUsageRepository.findAll();
     }
 
@@ -45,17 +54,17 @@ public class VehicleUsageService {
     public VehicleUsage createNewVehicleUsage(VehicleUsage usage) {
         String errorMsg = validateField(usage);
         if (errorMsg != null) {
-            throw new IllegalStateException(errorMsg);
+            throw new CapacityAppException(errorMsg);
         }
 
         Optional<VehicleUsage> exists = vehicleUsageRepository.findVehicleUsageByLisencePlate(usage.getLisencePlate());
         if (exists.isPresent()) {
-            throw new IllegalStateException("Vehicle is already registered in company");
+            throw new CapacityAppException(USAGE_EXISTS);
         }
 
         Optional<Vehicle> vehicle = vehicleRepository.findById(usage.getVehicleRefObj().getId());
         if (vehicle.isEmpty()) {
-            throw new IllegalStateException("Vehicle model does not exists");
+            throw new CapacityAppException(NOT_FOUND);
         }
 
         usage.setVehicleRefObj(vehicle.get());
@@ -65,47 +74,60 @@ public class VehicleUsageService {
     }
 
     @Transactional
-    public void loadGoodsOnVehicle(Long vehicleUsageId, Double ldm) {
+    public VehicleUsage loadGoodsOnVehicle(Long vehicleUsageId, Double ldm) {
         VehicleUsage foundUsage = getVehicleUsage(vehicleUsageId);
 
         double usedCapacity = foundUsage.getUsedCapacity() + ldm;
         double maxCapacity = foundUsage.getVehicleRefObj().getCapacity();
 
         if (foundUsage.getVehicleRefObj().getCapacity() < usedCapacity) {
-            throw new IllegalStateException("Vehicle will be overloaded: " + usedCapacity + " / " + maxCapacity);
+            throw new CapacityAppException(
+                    CapacityAppError.USAGE_OVERLOAD,
+                    usedCapacity,
+                    maxCapacity);
         }
 
         foundUsage.setUsedCapacity(usedCapacity);
         foundUsage.setLoadingTime(Timestamp.from(Instant.now()));
         // wenn beladen wird, setzte alte Entladezeit zurück
         foundUsage.setUnloadingTime(null);
+
+        return foundUsage;
     }
 
     @Transactional
-    public void unloadGoodsFromVehicle(Long vehicleUsageId, Double ldm) {
+    public VehicleUsage unloadGoodsFromVehicle(Long vehicleUsageId, Double ldm) {
         VehicleUsage foundUsage = getVehicleUsage(vehicleUsageId);
 
         if (foundUsage.getUsedCapacity() == 0) {
-            throw new IllegalStateException("Vehicle is empty, nothing to unload");
+            throw new CapacityAppException(CapacityAppError.USAGE_EMPTY);
         }
 
-        foundUsage.setUsedCapacity(0.0);
+        if (foundUsage.getUsedCapacity() < ldm) {
+            throw new CapacityAppException(CapacityAppError.USAGE_TO_LESS, foundUsage.getUsedCapacity(), ldm);
+        }
+
+        foundUsage.setUsedCapacity(foundUsage.getUsedCapacity() - ldm);
         foundUsage.setUnloadingTime(Timestamp.from(Instant.now()));
         // wenn entladen wird, setzte alte Beladezeit zurück
         foundUsage.setLoadingTime(null);
+
+        return foundUsage;
     }
 
     @Transactional
-    public void changeState(Long vehicleUsageId, VehicleState state) {
+    public VehicleUsage changeState(Long vehicleUsageId, VehicleState state) {
         VehicleUsage foundUsage = getVehicleUsage(vehicleUsageId);
         foundUsage.setVehicleState(state);
+
+        return foundUsage;
     }
 
     public void deleteVehicleUsage(Long vehicleUsageId) {
         boolean exists = vehicleUsageRepository.existsById(vehicleUsageId);
 
         if (!exists) {
-            throw new IllegalStateException("Vehicle does not exists");
+            throw new CapacityAppException(NOT_FOUND);
         }
 
         vehicleUsageRepository.deleteById(vehicleUsageId);
@@ -113,14 +135,14 @@ public class VehicleUsageService {
 
     private VehicleUsage getVehicleUsage(Long vehicleUsageId) {
         return vehicleUsageRepository.findById(vehicleUsageId)
-                .orElseThrow(() -> new IllegalStateException("Vehicle not found on company: " + vehicleUsageId));
+                .orElseThrow(() ->  new CapacityAppException(NOT_FOUND));
     }
 
     private String validateField(VehicleUsage usage) {
         if (usage.getLisencePlate() == null || usage.getLisencePlate().isEmpty()) {
-            return "license can not be empty";
+            return "Bitte Kennzeichen angeben ";
         } else if (usage.getVehicleRefObj() == null || usage.getVehicleRefObj().getId() == null) {
-            return "vehicle model unknown";
+            return "Fahrzeugmodell wurde nicht gefunden";
         } else {
             return null;
         }

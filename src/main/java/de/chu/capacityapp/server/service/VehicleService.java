@@ -1,6 +1,8 @@
 package de.chu.capacityapp.server.service;
 
 import de.chu.capacityapp.entity.model.Vehicle;
+import de.chu.capacityapp.server.error.CapacityAppError;
+import de.chu.capacityapp.server.error.CapacityAppException;
 import de.chu.capacityapp.server.repository.VehicleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -41,7 +43,7 @@ public class VehicleService {
 
         Optional<Vehicle> exists = vehicleRepository.findVehicleByCompanyAndModel(vehicle.getCompany(), vehicle.getModel());
         if (exists.isPresent()) {
-            throw new IllegalStateException("Vehicle Model exists");
+            throw new CapacityAppException(CapacityAppError.VEHICLE_EXISTS);
         }
 
         return vehicleRepository.save(vehicle);
@@ -54,8 +56,8 @@ public class VehicleService {
      * @param vehicleId
      */
     @Transactional
-    public void updateVehicle(Vehicle update, Long vehicleId) {
-        Vehicle found = vehicleRepository.findById(vehicleId).orElseThrow(() -> new IllegalStateException("Vehicle not found"));
+    public Vehicle updateVehicle(Vehicle update, Long vehicleId) {
+        Vehicle found = vehicleRepository.findById(vehicleId).orElseThrow(() -> new CapacityAppException(CapacityAppError.NOT_FOUND));
 
         String errorMsg = validateFields(update);
         if (errorMsg != null) {
@@ -67,6 +69,8 @@ public class VehicleService {
         found.setLength(update.getLength());
         found.setHeight(update.getHeight());
         found.setWidth(update.getWidth());
+
+        return found;
     }
 
     /**
@@ -75,10 +79,14 @@ public class VehicleService {
      * @param vehicleId
      */
     public void deleteVehicle(Long vehicleId) {
-        boolean exists = vehicleRepository.existsById(vehicleId);
+        Optional<Vehicle> exists = vehicleRepository.findById(vehicleId);
 
-        if (!exists) {
-            throw new IllegalStateException("Vehicle does not exists");
+        if (exists.isEmpty()) {
+            throw new CapacityAppException(CapacityAppError.NOT_FOUND);
+        }
+
+        if (exists.get().getVehicleUsagesByVehicleRef().size() > 0) {
+            throw new CapacityAppException(CapacityAppError.VEHICLE_USED);
         }
 
         vehicleRepository.deleteById(vehicleId);
@@ -86,15 +94,11 @@ public class VehicleService {
 
     private String validateFields(Vehicle update) {
         if (update.getCompany() == null  || update.getCompany().isEmpty()) {
-            return"Company must be filled";
+            return"Bitte Hersteller angeben";
         } else if (update.getModel() == null || update.getModel().isEmpty()) {
-            return"Model must be filled";
-        } else if (update.getLength() == null) {
-            return"Length must be filled";
-        } else if (update.getHeight() == null) {
-            return"Height must be filled";
-        } else if (update.getWidth() == null) {
-            return"Width must be filled";
+            return"Bitte Modell angeben";
+        } else if (update.getLength() == null || update.getHeight() == null || update.getWidth() == null) {
+            return"Bitte Länge, Breite, Höhe angeben";
         } else {
             return null;
         }

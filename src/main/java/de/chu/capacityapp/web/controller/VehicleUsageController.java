@@ -32,8 +32,8 @@ public class VehicleUsageController {
      * @return
      */
     @GetMapping
-    public List<VehicleUsageDTO> getVehicles() {
-        return this.vehicleUsageService.getAllVehicleUsages().stream()
+    public List<VehicleUsageDTO> getVehicles(@RequestParam(required = false, name = "filterOnAvailable") boolean filterOnAvailable) {
+        return this.vehicleUsageService.getAllVehicleUsages(filterOnAvailable).stream()
                 .map(this::convertToDto).collect(Collectors.toList());
     }
 
@@ -57,9 +57,10 @@ public class VehicleUsageController {
      * @param ldm
      */
     @PutMapping(path = "/{vehicleUsageId}/load/{ldm}")
-    public void loadGoodsOnVehicle(@PathVariable("vehicleUsageId") Long vehicleUsageId,
-                                   @PathVariable("ldm") Double ldm) {
-        this.vehicleUsageService.loadGoodsOnVehicle(vehicleUsageId, ldm);
+    public VehicleUsageDTO loadGoodsOnVehicle(@PathVariable("vehicleUsageId") Long vehicleUsageId,
+                                              @PathVariable("ldm") Double ldm) {
+        return convertToDto(
+                this.vehicleUsageService.loadGoodsOnVehicle(vehicleUsageId, ldm));
     }
 
     /**
@@ -69,9 +70,10 @@ public class VehicleUsageController {
      * @param ldm
      */
     @PutMapping(path = "/{vehicleUsageId}/unload/{ldm}")
-    public void unloadGoodsFromVehicle(@PathVariable("vehicleUsageId") Long vehicleUsageId,
-                                       @PathVariable("ldm") Double ldm) {
-        this.vehicleUsageService.unloadGoodsFromVehicle(vehicleUsageId, ldm);
+    public VehicleUsageDTO unloadGoodsFromVehicle(@PathVariable("vehicleUsageId") Long vehicleUsageId,
+                                                  @PathVariable("ldm") Double ldm) {
+        return convertToDto(
+                this.vehicleUsageService.unloadGoodsFromVehicle(vehicleUsageId, ldm));
     }
 
     /**
@@ -81,9 +83,10 @@ public class VehicleUsageController {
      * @param state
      */
     @PutMapping(path = "/{vehicleUsageId}/state/{state}")
-    public void changeState(@PathVariable("vehicleUsageId") Long vehicleUsageId,
-                            @PathVariable("state") VehicleState state) {
-        this.vehicleUsageService.changeState(vehicleUsageId, state);
+    public VehicleUsageDTO changeState(@PathVariable("vehicleUsageId") Long vehicleUsageId,
+                                       @PathVariable("state") VehicleState state) {
+        return convertToDto(
+                this.vehicleUsageService.changeState(vehicleUsageId, state));
     }
 
     /**

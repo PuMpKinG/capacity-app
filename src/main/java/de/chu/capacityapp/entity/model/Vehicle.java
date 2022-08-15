@@ -2,6 +2,7 @@ package de.chu.capacityapp.entity.model;
 
 import javax.persistence.*;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * Klasse für den Autotyp: mit Hersteller und Modelangabe, sowie der Referenz zur Ladegröße
@@ -26,6 +27,9 @@ public class Vehicle extends AbstractEntity {
 
     @Column(name = "height", nullable = false)
     private Double height;
+
+    @OneToMany(mappedBy = "vehicleRefObj")
+    private Set<VehicleUsage> vehicleUsagesByVehicleRef;
 
     @Transient
     private Double capacity;
@@ -72,6 +76,14 @@ public class Vehicle extends AbstractEntity {
 
     public void setHeight(Double height) {
         this.height = height;
+    }
+
+    public Set<VehicleUsage> getVehicleUsagesByVehicleRef() {
+        return vehicleUsagesByVehicleRef;
+    }
+
+    public void setVehicleUsagesByVehicleRef(Set<VehicleUsage> vehicleUsagesByVehicleRef) {
+        this.vehicleUsagesByVehicleRef = vehicleUsagesByVehicleRef;
     }
 
     /**

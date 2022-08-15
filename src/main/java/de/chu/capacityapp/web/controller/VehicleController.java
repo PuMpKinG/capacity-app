@@ -53,10 +53,11 @@ public class VehicleController {
      * @param vehicleDTO
      */
     @PutMapping(path = "/update/{vehicleId}")
-    public void updateVehicle(@PathVariable("vehicleId") Long vehicleId,
+    public VehicleDTO updateVehicle(@PathVariable("vehicleId") Long vehicleId,
                               @RequestBody VehicleDTO vehicleDTO) {
-        Vehicle update = convertToModel(vehicleDTO);
-        this.vehicleService.updateVehicle(update, vehicleId);
+        return modelMapper.map(
+                this.vehicleService.updateVehicle(
+                        convertToModel(vehicleDTO), vehicleId), VehicleDTO.class);
     }
 
     /**

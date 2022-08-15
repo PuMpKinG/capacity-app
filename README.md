@@ -27,16 +27,16 @@ Unser Ziel mit dieser Aufgabe ist es Deine Arbeitsweise kennenzulernen und Deine
 ## Umsetzung
 Wie folgt wird das ganze umgesetzt:
 
-### Model 
+### Datenbank Modelle
+
 Vehicle
 * id
 * license
 * loadingTime
 * unloadingTime
-* usedCapacity
+* usedCapacity (ldm)
 * vehicleStatus (enum)
 * vehicleTypeRef
-> Was ist mit dem Belade- und Entladeort?
 
 VehicleType
 * id
@@ -45,7 +45,8 @@ VehicleType
 * height
 * width
 * length
-* capacity (transient)
+* capacity (transient / ldm)
+  -> Im Internet beschrieben, ist die maximale ldm immer die Länge des Fahrzeugs
 
 
 ### Funktionen
@@ -57,11 +58,13 @@ VehicleType
 * Fahrzeug-Bestand - Verwaltung
   * Neues Fahrzeug im Bestand
   * Fahrzeug aus dem Bestand löschen
+
 * Fahrzeug-Bestand - Laderaumauslastung
   * Fahrzeug beladen
   * Fahrzeug entladen
   * Ware umladen (extra Ansicht?)
   * Fahrzeugstatus anpassen
+  
 * Filter / Sortierung
   * Liste sortieren (Auslastung, freie Kapazität)
   * Liste filtern (volle Fahrzeuge, Fahrzeug unterwegs, Fahrzeug defekt)
@@ -72,4 +75,6 @@ VehicleType
 
 ## Fragen
 * Muss das @Transactional immer an jeder Methode geschrieben werden, oder gibt es eine andere Lösung?
-* Repository ist ein Interface. Gibt es fälle für eine Default-Implementierung oder nutzt man immer direkt das Interface wie in meinem Beispiel?
+* Autowired: am Constructor oder an den Variablen? Mir gefällt die Schreibweise mit dem Kontruktor - Variablen sind final
+* Repository ist ein Interface. Gibt es Fälle für eine Default-Implementierung oder nutzt man immer direkt das Interface wie in meinem Beispiel?
+* VehicleUsageRepository: Wie kann ich in den Filter ein Standard-Wert übergeben (Problem Interface)

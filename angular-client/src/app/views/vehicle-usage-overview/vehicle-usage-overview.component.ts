@@ -19,7 +19,6 @@ export class VehicleUsageOverviewComponent implements OnInit, AfterViewInit {
     displayedColumns = ['lisencePlate', 'capacity', 'vehicleState', 'vehicle', 'delete'];
     dataSource: MatTableDataSource<VehicleUsage>;
 
-    @ViewChild(MatPaginator, {static: false}) paginator: MatPaginator;
     @ViewChild(MatSort, {static: false}) sort: MatSort;
 
     constructor(private usageService: VehicleUsageOverviewServices, public dialog: MatDialog) {
@@ -36,7 +35,6 @@ export class VehicleUsageOverviewComponent implements OnInit, AfterViewInit {
      * be able to query its view for the initialized paginator and sort.
      */
     ngAfterViewInit() {
-        this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;
     }
 

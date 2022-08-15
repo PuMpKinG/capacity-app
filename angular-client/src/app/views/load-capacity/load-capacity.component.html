@@ -1,1 +1,104 @@
-<p>load-capacity-overview works!</p>
+<h2>Laderaumauslastung der Fahrzeuge</h2>
+<div class="info">
+    <span>Prüfung der Laderaumauslastung, sowie Laden und Entladen von Waren ist hier möglich.</span>
+</div>
+
+<!-- https://stackblitz.com/angular/dnbermjydavk?file=app%2Ftable-overview-example.html -->
+<div class="header">
+    <mat-form-field>
+        <input matInput #filterInput (keyup)="applyFilter(filterInput.value)" placeholder="Filter">
+    </mat-form-field>
+</div>
+
+<div class="container mat-elevation-z8">
+
+    <div>
+        <button class="btn m-r-s m-l-s" mat-flat-button color="primary" (click)="loadVehicle()" [disabled]="!selected">
+            <mat-icon>add</mat-icon>
+            Fahrzeug beladen
+        </button>
+        <button class="btn m-r-s" mat-flat-button color="primary" (click)="unloadVehicle()" [disabled]="!selected">
+            <mat-icon>remove</mat-icon>
+            Fahrzeug entladen
+        </button>
+        <button class="btn m-r-s" mat-flat-button color="primary" (click)="vehicleDefect()" [disabled]="!selected">
+            <mat-icon>block</mat-icon>
+            Fahrzeug defekt
+        </button>
+        <button class="btn m-r-s" mat-flat-button color="primary" (click)="vehicleOnRoad()" [disabled]="!selected">
+            <mat-icon>place</mat-icon>
+            Fahrzeug unterwegs
+        </button>
+        <button class="btn" mat-flat-button color="primary" (click)="vehicleOnStorage()" [disabled]="!selected">
+            <mat-icon>home</mat-icon>
+            Fahrzeug am Lager
+        </button>
+    </div>
+
+    <mat-table [dataSource]="dataSource" matSort>
+
+        <ng-container matColumnDef="lisencePlate">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Kennzeichen</mat-header-cell>
+            <mat-cell *matCellDef="let row"> {{row.lisencePlate}} </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="usedCapacity">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Lademeter belegt</mat-header-cell>
+            <mat-cell *matCellDef="let row"> {{row.usedCapacity | number:'1.2-2' }} </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="freeCapacity">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Lademeter frei</mat-header-cell>
+            <mat-cell *matCellDef="let row"> {{ (row.vehicle.capacity - (row.usedCapacity || 0) )| number:'1.2-2' }} </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="maxCapacity">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Lademeter max</mat-header-cell>
+            <mat-cell *matCellDef="let row"> {{ row.vehicle.capacity | number:'1.2-2' }} </mat-cell>
+        </ng-container>
+
+
+        <ng-container matColumnDef="capacity">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Auslastung (%)</mat-header-cell>
+            <mat-cell *matCellDef="let row">
+                <mat-progress-bar mode="determinate" style="margin-right: 20px; margin-left: 5px"
+                                  value="{{ 100 / (row.vehicle.capacity) * (row.usedCapacity || 0) }}"></mat-progress-bar>
+            </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="loadingTime">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Beladezeit</mat-header-cell>
+            <mat-cell *matCellDef="let row"> {{ (row.loadingTime | date:'dd.MM.yyyy HH:mm') || '---'}} </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="unloadingTime">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Entladezeit</mat-header-cell>
+            <mat-cell *matCellDef="let row"> {{ (row.unloadingTime | date:'dd.MM.yyyy HH:mm') || '---' }} </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="vehicleState">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Status</mat-header-cell>
+            <mat-cell *matCellDef="let row"> {{ row.vehicleState }} </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="vehicle">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Fahrzeugmodel</mat-header-cell>
+            <mat-cell *matCellDef="let row"> {{ row.vehicle.company + ' ' + row.vehicle.model}} </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="measure">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Maße Laderaum</mat-header-cell>
+            <mat-cell *matCellDef="let row"> {{ 'Länge: ' + row.vehicle.length + ', Breite: ' + row.vehicle.width + ', Höhe: ' + row.vehicle.height }} </mat-cell>
+        </ng-container>
+
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns;"  [ngClass]="{ 'selected': selection.isSelected(row)}"
+                 (click)="selection.select(row)">
+        </mat-row>
+    </mat-table>
+
+    <mat-checkbox class="filterAvialable" [(ngModel)]="filterOnAvailable" (change)="filterAvailableChanged()" >Nur Fahrzeuge mit freien Lagermeter und im Lager anzeigen?</mat-checkbox>
+
+</div>
+
+

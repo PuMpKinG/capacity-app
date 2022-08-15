@@ -7,10 +7,10 @@ export class Vehicle {
     id: number | undefined;
     company: string | undefined;
     model: string | undefined;
-    capacity: number | undefined;
-    length: number | undefined;
-    width: number | undefined;
-    height: number | undefined;
+    capacity: number | 0;
+    length: number | 0;
+    width: number | 0;
+    height: number | 0;
 
     static convert: Converter<Vehicle> = (object: any) => {
         return Util.convertTo(Vehicle, object);
@@ -24,7 +24,7 @@ export class VehicleUsage {
     lisencePlate: string | undefined;
     loadingTime: Date | undefined;
     unloadingTime: Date | undefined;
-    usedCapacity: number | undefined;
+    usedCapacity: number | 0;
     vehicleState: string | undefined;
     vehicle: Vehicle | undefined;
 
@@ -35,4 +35,8 @@ export class VehicleUsage {
     };
 
     static convertArray: Converter<VehicleUsage[]> = (objects: any[]) => Util.convertArray(VehicleUsage.convert, objects);
+}
+
+export enum VehicleState {
+    AVAILABLE = 'AVAILABLE', ON_STREET = 'ON_STREET', DESTROYED = 'DESTROYED'
 }

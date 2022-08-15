@@ -3,14 +3,14 @@ import {LoggerService} from "../../service/logger.service";
 import {map, Observable} from "rxjs";
 import {Vehicle} from "../../app.types";
 import {HttpService} from "../../service/http.service";
+import {environment} from "../../../environments/environment";
 
 @Injectable({
     providedIn: 'root'
 })
 export class VehicleOverviewService {
 
-    private API_URL = 'http://localhost:8081/api'
-
+    private API_URL = environment.apiUrl
     constructor(private http: HttpService, private log: LoggerService) {
     }
 

@@ -9,5 +9,17 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 }
 
 .p-r-s {
-  padding-right: 5px;
+  padding-right: 5px !important;
+}
+
+.p-l-s {
+  padding-left: 5px !important;
+}
+
+.m-r-s {
+  margin-right: 5px !important;
+}
+
+.m-l-s {
+  margin-left: 5px !important;
 }

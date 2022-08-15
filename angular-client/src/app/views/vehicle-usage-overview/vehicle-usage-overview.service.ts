@@ -3,19 +3,25 @@ import {LoggerService} from "../../service/logger.service";
 import {map, Observable} from "rxjs";
 import {VehicleUsage} from "../../app.types";
 import {HttpService} from "../../service/http.service";
+import {environment} from "../../../environments/environment";
 
 @Injectable({
     providedIn: 'root'
 })
 export class VehicleUsageOverviewServices {
 
-    private API_URL = 'http://localhost:8081/api'
+    protected API_URL = environment.apiUrl
 
-    constructor(private http: HttpService, private log: LoggerService) {
+    constructor(protected http: HttpService, private log: LoggerService) {
     }
 
-    getVehiclesUsages(): Observable<VehicleUsage[]> {
-        return this.http.get<VehicleUsage[]>(this.API_URL + '/vehicle-usage').pipe(map(VehicleUsage.convertArray));
+    getVehiclesUsages(filterOvAvailable?: boolean): Observable<VehicleUsage[]> {
+        let url = this.API_URL + '/vehicle-usage';
+        if (filterOvAvailable) {
+            url += '?filterOnAvailable=true'
+        }
+
+        return this.http.get<VehicleUsage[]>(url).pipe(map(VehicleUsage.convertArray));
     }
 
     createVehicleUsage(newUsage: VehicleUsage): Observable<VehicleUsage> {

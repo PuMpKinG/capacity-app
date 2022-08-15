@@ -3,7 +3,6 @@ import {BrowserModule} from '@angular/platform-browser';
 
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
-import {LoadCapacityOverviewComponent} from './views/load-capacity-overview/load-capacity-overview.component';
 import {VehicleOverviewComponent} from './views/vehicle-overview/vehicle-overview.component';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {MatSidenavModule} from "@angular/material/sidenav";
@@ -23,16 +22,21 @@ import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {ConfirmDialogComponent} from './dialog/comfirm-dialog/confirm-dialog.component';
 import {VehicleUsageOverviewComponent} from "./views/vehicle-usage-overview/vehicle-usage-overview.component";
 import {MatSelectModule} from "@angular/material/select";
+import {LoadCapacityComponent} from "./views/load-capacity/load-capacity.component";
+import {MatProgressBarModule} from "@angular/material/progress-bar";
+import { PromptDialogComponent } from './dialog/prompt-dialog/prompt-dialog.component';
+import {MatCheckboxModule} from "@angular/material/checkbox";
 
 @NgModule({
     declarations: [
         AppComponent,
-        LoadCapacityOverviewComponent,
+        LoadCapacityComponent,
         VehicleOverviewComponent,
         VehicleUsageOverviewComponent,
         NewVehicleUsageDialogComponent,
         NewVehicleDialog,
         ConfirmDialogComponent,
+        PromptDialogComponent,
     ],
     imports: [
         HttpClientModule,
@@ -51,14 +55,17 @@ import {MatSelectModule} from "@angular/material/select";
         MatButtonModule,
         ReactiveFormsModule,
         FormsModule,
-        MatSelectModule
+        MatSelectModule,
+        MatProgressBarModule,
+        MatCheckboxModule
     ],
     providers: [],
     bootstrap: [AppComponent],
     exports: [
         NewVehicleUsageDialogComponent,
         NewVehicleDialog,
-        ConfirmDialogComponent
+        ConfirmDialogComponent,
+        PromptDialogComponent
     ]
 })
 export class AppModule {
